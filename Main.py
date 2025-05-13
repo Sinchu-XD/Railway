@@ -6,7 +6,7 @@ app = Client("train_bot", bot_token="7454714545:AAHIPQHGiujqJmWj-vbd4R3VJIBrjMX8
 
 @app.on_message(filters.command("start"))
 async def start(_, message: Message):
-    await message.reply_text("🚆 Welcome to Indian Railway Bot!\n\nUse commands like:\n/trainstatus\n/trainsfromto\n/fare\n/schedule")
+    await message.reply_text("🚆 Welcome to Indian Railway Bot!\n\nUse commands like:\n/trainstatus\n/pnr\n/trainsfromto\n/fare\n/schedule")
 
 # Register handlers
 train_status.register(app)
