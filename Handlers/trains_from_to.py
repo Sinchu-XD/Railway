@@ -1,24 +1,46 @@
 import requests
-from pyrogram import filters
+from pyrogram import Client, filters
 from pyrogram.types import Message
 
 def register(app):
-    @app.on_message(filters.command("trainsfromto"))
-    async def trains_between(_, message: Message):
-        if len(message.command) < 3:
-            return await message.reply_text("Usage: /trainsfromto <from_station_code> <to_station_code>")
-        from_station = message.command[1].upper()
-        to_station = message.command[2].upper()
-        url = f"https://api.railwayapi.site/between/{from_station}/{to_station}"
+    @app.on_message(filters.command("trainsbetween"))
+    async def trains_between(client: Client, message: Message):
         try:
-            r = requests.get(url).json()
-            trains = r.get("trains", [])
-            if not trains:
-                return await message.reply_text("🚫 No trains found.")
-            text = "🚉 **Trains Between Stations**:\n\n"
-            for t in trains[:10]:  # Limit to 10
-                text += f"🔹 {t['train_name']} ({t['train_number']}) - {t['src_departure_time']} to {t['dest_arrival_time']}\n"
-            await message.reply_text(text)
-        except:
-            await message.reply_text("❌ Error fetching data.")
-          
+            args = message.text.split()
+            if len(args) != 3:
+                await message.reply("❌ Usage: /trainsbetween <from_station> <to_station>")
+                return
+
+            from_station, to_station = args[1].upper(), args[2].upper()
+
+            url = "https://irctc1.p.rapidapi.com/api/v3/trainBetweenStations"
+            querystring = {
+                "fromStationCode": from_station,
+                "toStationCode": to_station
+            }
+
+            headers = {
+                "x-rapidapi-key": "YOUR_RAPIDAPI_KEY",
+                "x-rapidapi-host": "irctc1.p.rapidapi.com"
+            }
+
+            response = requests.get(url, headers=headers, params=querystring)
+            data = response.json()
+
+            if data.get("data"):
+                trains = data["data"]
+                reply = f"🚆 Trains from {from_station} to {to_station}:\n\n"
+                for train in trains[:10]:
+                    days = ", ".join([d["day_code"] for d in train["days"] if d["runs"] == "Y"])
+                    reply += (
+                        f"🔸 {train['train_name']} ({train['train_number']})\n"
+                        f"⏰ Departure: {train['from_std']} | Arrival: {train['to_sta']}\n"
+                        f"🕒 Duration: {train['duration']}\n"
+                        f"📅 Runs on: {days}\n\n"
+                    )
+                await message.reply(reply)
+            else:
+                await message.reply("❌ No trains found between the given stations.")
+
+        except Exception as e:
+            await message.reply(f"⚠️ Error: {e}")
