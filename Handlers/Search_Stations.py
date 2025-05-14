@@ -17,7 +17,7 @@ def register(app):
             querystring = {"query": query}
 
             headers = {
-                "x-rapidapi-key": "YOUR_RAPIDAPI_KEY",  # ⚠️ Replace with your actual key
+                "x-rapidapi-key": "814d366d83msh97b8ba89155c2a8p140352jsn4c9a3b3bb565",  # ⚠️ Replace with your actual key
                 "x-rapidapi-host": "irctc1.p.rapidapi.com"
             }
 
