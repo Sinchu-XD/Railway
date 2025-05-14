@@ -8,7 +8,7 @@ def register(app):
         try:
             args = message.text.split()
             if len(args) < 2 or len(args) > 3:
-                await message.reply("❌ Usage: /livestatus <train_no> [start_day (1-3)]")
+                await message.reply("❌ Usage: /current <train_no> [start_day (1-3)]")
                 return
 
             train_no = args[1]
