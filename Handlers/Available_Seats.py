@@ -2,6 +2,8 @@ import requests
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
+YOUR_RAPIDAPI_KEY = "814d366d83msh97b8ba89155c2a8p140352jsn4c9a3b3bb565"
+
 def register(app):
     @app.on_message(filters.command("seat"))
     async def seat_availability(client, message: Message):
