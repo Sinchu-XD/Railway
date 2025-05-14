@@ -56,22 +56,22 @@ async def help(client: Client, message: Message):
 /searchtrain <train name/number> - Search trains by name or number
 
 🚆 **Train Details**
-/gettrainclasses <train_number> - Get available classes for a train
-/gettrainschedule <train_number> - Get train schedule
+/trainclasses <train_number> - Get available classes for a train
+/schedule <train_number> - Get train schedule
 /trainstatus <train_number> - Get current train status
 
 📍 **Station & Route Info**
-/trainsfromstation <station_code> - Trains from a specific station
+/stationtrains <station_code> - Trains from a specific station
 /trainsbetweenstations <from> <to> - Trains between two stations
-/currentstation <station_code> - Live arrivals at a station
-/livestation <station_code> - Live status from a station
+/current <train_no> [start_day (1-3)] - Get Where Is Your Train
+/livestations <station_code> - Live status from a station
 
 💺 **Booking & Seats**
-/checkseatavailability <train_no> <from> <to> <class> <date> <quota> - Check seat availability
-/fare <train_no> <from> <to> <class> <quota> <age> - Fare inquiry
+/seat <train_no> <from> <to> <class> <date> <quota> - Check seat availability
+/trainfare <train_no> <from_code> <to_code> - Fare inquiry
 
 📄 **Other Utilities**
-/pnr <pnr_number> - Get PNR status
+/pnrstatus <pnr_number> - Get PNR status
 """
     await message.reply(help_text)
 
