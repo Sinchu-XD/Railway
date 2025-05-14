@@ -20,11 +20,7 @@ from Handlers import trains_from_to
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-API_ID = os.environ.get("API_ID")
-API_HASH = os.environ.get("API_HASH")
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
-
-app = Client("train_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+app = Client("train_bot", bot_token="7454714545:AAHIPQHGiujqJmWj-vbd4R3VJIBrjMX8GPM", api_id=6067591, api_hash="94e17044c2393f43fda31d3afe77b26b")
 
 Available_Seats.register(app)
 Current_Station.register(app)
