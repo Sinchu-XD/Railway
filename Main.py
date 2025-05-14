@@ -1,8 +1,21 @@
 import os
 import logging
-from pyrogram import Client
+from pyrogram import Client, filters
 from pyrogram.types import Message
-from Handlers import search_station, search_train, get_train_classes, check_seat_availability, get_train_schedule, get_live_train_status, trains_between_stations
+
+from Handlers import Available_Seats
+from Handlers import Current_Station
+from Handlers import Live_Station
+from Handlers import Search_Stations
+from Handlers import Search_Train
+from Handlers import Train_Class
+from Handlers import Trains_From_Station
+from Handlers import fare_enquiry
+from Handlers import pnr_status
+from Handlers import schedule
+from Handlers import train_status
+from Handlers import trains_from_to
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -13,13 +26,18 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 app = Client("train_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
-search_station.register(app)
-search_train.register(app)
-get_train_classes.register(app)
-check_seat_availability.register(app)
-get_train_schedule.register(app)
-get_live_train_status.register(app)
-trains_between_stations.register(app)
+Available_Seats.register(app)
+Current_Station.register(app)
+Live_Station.register(app)
+Search_Stations.register(app)
+Search_Train.register(app)
+Train_Class.register(app)
+Trains_From_Station.register(app)
+fare_enquiry.register(app)
+pnr_status.register(app)
+schedule.register(app)
+train_status.register(app)
+trains_from_to.register(app)
 
 @app.on_message(filters.command("start"))
 async def start(client: Client, message: Message):
@@ -28,18 +46,33 @@ async def start(client: Client, message: Message):
 @app.on_message(filters.command("help"))
 async def help(client: Client, message: Message):
     help_text = """
-    🤖 **Train Info Bot Commands**:
-    
-    /start - Start the bot
-    /help - Show this help message
-    /searchstation <station_code> - Search for station info by station code
-    /searchtrain <train_number> - Search for train by train number
-    /gettrainclasses <train_number> - Get available classes for a train
-    /checkseataavailability <train_number> <from_station> <to_station> - Check seat availability
-    /gettrainschedule <train_number> - Get the schedule for a train
-    /getlivetrainstatus <train_number> - Get live status of a train
-    /trainsbetweenstations <from_station> <to_station> - Get trains between two stations
-    """
+🤖 **Train Info Bot Commands**:
+
+/start - Start the bot
+/help - Show this help message
+
+🔎 **Search Commands**
+/searchstation <name/code> - Search stations by name or code
+/searchtrain <train name/number> - Search trains by name or number
+
+🚆 **Train Details**
+/gettrainclasses <train_number> - Get available classes for a train
+/gettrainschedule <train_number> - Get train schedule
+/trainstatus <train_number> - Get current train status
+
+📍 **Station & Route Info**
+/trainsfromstation <station_code> - Trains from a specific station
+/trainsbetweenstations <from> <to> - Trains between two stations
+/currentstation <station_code> - Live arrivals at a station
+/livestation <station_code> - Live status from a station
+
+💺 **Booking & Seats**
+/checkseatavailability <train_no> <from> <to> <class> <date> <quota> - Check seat availability
+/fare <train_no> <from> <to> <class> <quota> <age> - Fare inquiry
+
+📄 **Other Utilities**
+/pnr <pnr_number> - Get PNR status
+"""
     await message.reply(help_text)
 
 if __name__ == "__main__":
