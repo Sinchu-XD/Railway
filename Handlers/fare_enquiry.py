@@ -1,25 +1,42 @@
 import requests
-from pyrogram import filters
+from pyrogram import Client, filters
 from pyrogram.types import Message
 
 def register(app):
-    @app.on_message(filters.command("fare"))
-    async def fare_enquiry(_, message: Message):
-        if len(message.command) < 6:
-            return await message.reply_text("Usage: /fare <train_no> <from> <to> <date YYYY-MM-DD> <class>")
-        train_no = message.command[1]
-        from_station = message.command[2].upper()
-        to_station = message.command[3].upper()
-        date = message.command[4]
-        cls = message.command[5].upper()  # e.g. SL, 3A, 2A
-        url = f"https://api.railwayapi.site/fare/{train_no}/{from_station}/{to_station}/{date}/{cls}"
+    @app.on_message(filters.command("trainfare"))
+    async def train_fare(client, message: Message):
         try:
-            r = requests.get(url).json()
-            fare = r.get("fare")
-            quota = r.get("quota", "GN")
-            if not fare:
-                return await message.reply_text("🚫 Could not fetch fare.")
-            await message.reply_text(f"💰 **Fare** for {cls} on {date}:\nTrain: {train_no}\nFrom: {from_station}\nTo: {to_station}\nQuota: {quota}\n\n💵 Amount: ₹{fare}")
-        except:
-            await message.reply_text("❌ Error fetching fare.")
-          
+            args = message.text.split(" ", 3)
+            if len(args) < 4:
+                await message.reply("❌ Usage: /trainfare <train_no> <from_code> <to_code>")
+                return
+
+            train_no = args[1]
+            from_code = args[2].upper()
+            to_code = args[3].upper()
+
+            url = "https://irctc1.p.rapidapi.com/api/v2/getFare"
+            querystring = {
+                "trainNo": train_no,
+                "fromStationCode": from_code,
+                "toStationCode": to_code
+            }
+
+            headers = {
+                "x-rapidapi-key": "YOUR_RAPIDAPI_KEY",
+                "x-rapidapi-host": "irctc1.p.rapidapi.com"
+            }
+
+            response = requests.get(url, headers=headers, params=querystring)
+            data = response.json()
+
+            if data.get("status") and data.get("data"):
+                reply_text = f"💰 Fare Details for Train {train_no} ({from_code} → {to_code}):\n"
+                for fare in data["data"]:
+                    reply_text += f"• {fare['classType']} ({fare['className']}): ₹{fare['fare']}\n"
+                await message.reply(reply_text)
+            else:
+                await message.reply("❌ Could not fetch train fare. Please check the parameters.")
+
+        except Exception as e:
+            await message.reply(f"⚠️ Error: {e}")
