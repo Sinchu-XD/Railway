@@ -29,7 +29,7 @@ def register(app):
             }
 
             headers = {
-                "x-rapidapi-key": "YOUR_RAPIDAPI_KEY",
+                "x-rapidapi-key": YOUR_RAPIDAPI_KEY,
                 "x-rapidapi-host": "irctc1.p.rapidapi.com"
             }
 
